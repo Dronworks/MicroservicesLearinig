@@ -1,0 +1,5 @@
+package com.in28minutes.res.webservices.restfulwebservices.filtering;
+
+public class FilterController {
+
+}

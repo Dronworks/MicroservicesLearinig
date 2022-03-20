@@ -1,0 +1,9 @@
+package com.in28minutes.res.webservices.restfulwebservices.exception;
+
+public class ExceptionResponse {
+
+	private Date timestamp;
+	private String message;
+	private String detail;
+	
+}

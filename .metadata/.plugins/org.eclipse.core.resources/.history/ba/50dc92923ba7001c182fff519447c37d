@@ -1,0 +1,49 @@
+package com.in28minutes.res.webservices.restfulwebservices.entity;
+
+import java.util.Date;
+
+public class Post {
+	
+	private int id;
+	private String firstName;
+	private Date birthDate;
+	
+	public Post() {
+	}
+
+	public Post(int id, String firstName, Date birthDate) {
+		this.id = id;
+		this.firstName = firstName;
+		this.birthDate = birthDate;
+	}
+
+	public int getId() {
+		return id;
+	}
+	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	public String getFirstName() {
+		return firstName;
+	}
+	
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	
+	public Date getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", firstName=" + firstName + ", birthDate=" + birthDate + "]";
+	}
+
+}

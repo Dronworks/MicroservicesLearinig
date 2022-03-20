@@ -1,0 +1,7 @@
+package com.in28minutes.res.webservices.restfulwebservices.exception;
+
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+public class CustomizeResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
+
+}

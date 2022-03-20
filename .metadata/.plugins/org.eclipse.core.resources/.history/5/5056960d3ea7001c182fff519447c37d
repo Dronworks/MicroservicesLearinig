@@ -1,0 +1,78 @@
+package com.in28minutes.res.webservices.restfulwebservices.controller;
+
+import java.net.URI;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import com.in28minutes.res.webservices.restfulwebservices.dao.PostDaoService;
+import com.in28minutes.res.webservices.restfulwebservices.dao.UserDaoService;
+import com.in28minutes.res.webservices.restfulwebservices.entity.Post;
+import com.in28minutes.res.webservices.restfulwebservices.entity.User;
+import com.in28minutes.res.webservices.restfulwebservices.exception.MalformedUser;
+import com.in28minutes.res.webservices.restfulwebservices.exception.UserNotFoundException;
+
+@RestController
+public class UserResource {
+	
+	@Autowired
+	private UserDaoService userDaoService;
+	
+	@Autowired
+	private PostDaoService postDaoService;
+
+	@GetMapping("/users")
+	public List<User> retrieveAllUsers() {
+		return userDaoService.findAll();
+	}
+	
+	@GetMapping("/users/{id}")
+	public User getUserById(@PathVariable int id) {
+		User findOne = userDaoService.findOne(id);
+		if(findOne == null) {
+			throw new UserNotFoundException("id - " + id);
+		}
+		return findOne;
+	}
+	
+	@PostMapping("/users")
+	public ResponseEntity<User> addUser(@RequestBody User user) {
+		if(user.getFirstName() == null) {
+			throw new MalformedUser("Bad user provided - " + user.toString());
+		}
+		userDaoService.save(user);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
+		return ResponseEntity.created(uri).build();
+	}
+	
+	@GetMapping("/users/{id}/posts/{post_id}")
+	public User getUserPostById(@PathVariable int id, @PathVariable int postId) {
+		User findOne = userDaoService.findOne(id);
+		if(findOne == null) {
+			throw new UserNotFoundException("id - " + id);
+		}
+		return findOne;
+	}
+	
+	@PostMapping("/users/{id}/posts")
+	public User getUserById(@PathVariable int id) {
+		User findOne = userDaoService.findOne(id);
+		if(findOne == null) {
+			throw new UserNotFoundException("id - " + id);
+		}
+		return findOne;
+	}
+	
+	@GetMapping("/users/{id}/posts")
+	public List<Post> getAllUserPosts(@PathVariable int userId) {
+		return postDaoService.findAll(userId);
+	}
+	
+}

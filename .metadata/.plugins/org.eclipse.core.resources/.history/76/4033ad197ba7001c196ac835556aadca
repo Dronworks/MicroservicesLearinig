@@ -1,0 +1,3 @@
+logging.level.org.springframework=debug
+#Dev tools exception return stacktrace
+server.error.include-stacktrace=never 

@@ -1,0 +1,12 @@
+package com.in28minutes.res.webservices.restfulwebservices.filtering;
+
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class FilterController {
+	
+	public SomeBean retrieveSomeBean() {
+		return new SomeBean("value1", "value2");
+	}
+
+}
