@@ -44,7 +44,7 @@ public class PersonVersioningController {
 		return new PersonV2(new Name("test", "tester"));
 	}
 	
-	//Produces/Accept header VERSIONING
+	//Produces/Accept header VERSIONING - MIME type VERSINING - CONTENT NEGOTIATION - MEDIA TYPE
 	
 	// Example http://localhost:8080/person/produces -> header flag: Accept - application/vnd.company.app-v1+json
 	@GetMapping(value="/person/produces", produces="application/vnd.company.app-v1+json")
