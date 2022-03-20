@@ -1,6 +1,9 @@
 package com.in28minutes.res.webservices.restfulwebservices.filtering;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
+
 // Will be filtered dynamicly from the controller
+@JsonFilter("SomeBeanDfilter")
 public class SomeBeanDynamic {
 
 	private String field1;
