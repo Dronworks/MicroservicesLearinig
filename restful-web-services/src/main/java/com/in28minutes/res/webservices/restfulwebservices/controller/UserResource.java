@@ -1,6 +1,8 @@
 package com.in28minutes.res.webservices.restfulwebservices.controller;
 
-import java.lang.reflect.Method;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.net.URI;
 import java.util.List;
 
@@ -18,12 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
-
-import com.in28minutes.res.webservices.restfulwebservices.dao.PostDaoService;
 import com.in28minutes.res.webservices.restfulwebservices.dao.UserDaoService;
-import com.in28minutes.res.webservices.restfulwebservices.entity.Post;
 import com.in28minutes.res.webservices.restfulwebservices.entity.User;
 import com.in28minutes.res.webservices.restfulwebservices.exception.MalformedRequest;
 import com.in28minutes.res.webservices.restfulwebservices.exception.NotFoundException;
@@ -34,8 +31,6 @@ public class UserResource {
 	@Autowired
 	private UserDaoService userDaoService;
 	
-	@Autowired
-	private PostDaoService postDaoService;
 
 	@GetMapping("/users")
 	public List<User> retrieveAllUsers() {
@@ -70,29 +65,6 @@ public class UserResource {
 		userDaoService.save(user);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(user.getId()).toUri();
 		return ResponseEntity.created(uri).build();
-	}
-	
-	@GetMapping("/users/{id}/posts/{post_id}")
-	public Post getUserPostById(@PathVariable int id, @PathVariable("post_id") int postId) {
-		Post findOne = postDaoService.findOne(postId, id);
-		if(findOne == null) {
-			throw new NotFoundException(String.format("userId - %s, postId - %s" + id, postId));
-		}
-		return findOne;
-	}
-	
-	@PostMapping("/users/{id}/posts")
-	public Post createPost(@PathVariable int id, @RequestBody Post post) {
-		if(post.getMessage() == null) {
-			throw new MalformedRequest("Bad post - " + post.toString());
-		}
-		Post newPost = postDaoService.save(post, id);
-		return newPost;
-	}
-	
-	@GetMapping("/users/{id}/posts")
-	public List<Post> getAllUserPosts(@PathVariable("id") int userId) {
-		return postDaoService.findAll(userId);
 	}
 	
 }
