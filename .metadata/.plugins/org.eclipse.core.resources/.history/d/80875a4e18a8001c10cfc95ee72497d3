@@ -1,8 +1,0 @@
-package com.in28minutes.res.webservices.restfulwebservices.filtering;
-
-import org.springframework.web.bind.annotation.RestController;
-
-@RestController
-public class FilterController {
-
-}
