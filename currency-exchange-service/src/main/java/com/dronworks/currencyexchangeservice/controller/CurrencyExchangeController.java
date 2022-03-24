@@ -1,6 +1,7 @@
 package com.dronworks.currencyexchangeservice.controller;
 
 import com.dronworks.currencyexchangeservice.entity.CurrencyExchange;
+import com.dronworks.currencyexchangeservice.exception.ExchangeRatesNotFoundException;
 import com.dronworks.currencyexchangeservice.repository.CurrencyExchangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -25,7 +26,7 @@ public class CurrencyExchangeController {
 //        CurrencyExchange currencyExchange = new CurrencyExchange(1000L, from, to, BigDecimal.valueOf(65));
         CurrencyExchange currencyExchange = currencyExchangeRepository.findByFromAndTo(from, to);
         if(currencyExchange == null) {
-            throw new RuntimeException(String.format("Cant find exchange from %s to %s", from, to));
+            throw new ExchangeRatesNotFoundException(String.format("Cant find exchange from %s to %s", from, to));
         }
         currencyExchange.setEnvironment(environment.getProperty("local.server.port"));
         return currencyExchange;
