@@ -11,7 +11,7 @@ public class ApiGatewayConfiguration {
     @Bean
     public RouteLocator gatewayRouter(RouteLocatorBuilder routeLocatorBuilder) {
         return routeLocatorBuilder.routes()
-                .route(p -> p.path("/get")
+                .route(p -> p.path("/get") // can be matched on multiple parameters!
                 .filters(f -> f.addRequestHeader("MyHeader", "MyUri")
                         .addRequestParameter("SomeParam", "Param"))
                 .uri("http://httpbin.org:80"))
