@@ -1,6 +1,7 @@
 package com.dronworks.currencyexchangeservice.controller;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +26,16 @@ public class CircuitBreakerController {
         can see configuration example in Getting Started on the left.
         Threshold in percents
      */
-    @CircuitBreaker(name="default", fallbackMethod = "hardcodedResponse")
+//    @CircuitBreaker(name="default", fallbackMethod = "hardcodedResponse")
+    // If in 10 seconds we want to allow only 1000 requests
+//    @RateLimiter(name="default")
+    @RateLimiter(name="sample-api")
     public String sampleApi() {
         logger.info("Sample api call received");
-        ResponseEntity<String> forEntity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy", String.class);
+//        ResponseEntity<String> forEntity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy", String.class);
 
-        return forEntity.getBody();
+//        return forEntity.getBody();
+        return "Sample";
     }
 
     public String hardcodedResponse(Exception ex) { // Can deal with different kind of exceptions with different fallback functions
