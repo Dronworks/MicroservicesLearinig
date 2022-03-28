@@ -9,3 +9,8 @@ Ctrl+shit+a - search actions (can search settings)
 ctrl+e - recent files!!!
 
 ctrl+shift+e - recent edited files (locations)
+
+shift+ctrl+right/left arrow - select words
+
+alt+shift+up/down - select/unselect section - loop - function... (eclipse)
+ctrl+w/ctrl+shift+w - (intellij) 
