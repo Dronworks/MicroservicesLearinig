@@ -1,0 +1,11 @@
+Ctrl+P - show parameter of a function.
+
+ctrl+alt+shift+N - Symbol search - for example method name all over.
+
+When searching file, add "/" at the end to search folders.
+
+Ctrl+shit+a - search actions (can search settings)
+
+ctrl+e - recent files!!!
+
+ctrl+shift+e - recent edited files (locations)
