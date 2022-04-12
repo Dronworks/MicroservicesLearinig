@@ -72,3 +72,12 @@ docker **top {container id}**
 
 ### Show cpu/memory usages 
 docker **stats**
+
+### Limit container RAM / CPU (cpu is in thousanda 5000 = 5% 100000 = 100%)
+docker run -p 5002:5000 **-m 500m --cpu-quota 5000** -d in28min/todo-rest-api-h2:1.0.0.RELEASE
+
+### Info about dockers images and more
+docker **system df**
+
+### Zipkin server (for tracing spring servers) via docker 
+docker run -p **9411:9411 openzipkin/zipkin:2.23**
