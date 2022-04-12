@@ -38,6 +38,7 @@
 			<artifactId>spring-boot-starter-aop</artifactId>
 		</dependency>
 
+		<!-- These two are for requests ids for tracking -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-sleuth-zipkin</artifactId>
@@ -48,10 +49,11 @@
 			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
 
-		<dependency>
+		<!-- This is for queue in case zipkin is down, so when it is up, the messages are read -->
+<!--		<dependency>
 			<groupId>org.springframework.amqp</groupId>
 			<artifactId>spring-rabbit</artifactId>
-		</dependency>
+		</dependency>-->
 
 		<dependency>
 			<groupId>io.github.resilience4j</groupId>
