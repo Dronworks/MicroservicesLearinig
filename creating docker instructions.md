@@ -32,3 +32,10 @@
 mvn **spring-boot:build-image**
 
 Also possible to add -DskipTests
+
+## Docker Compose - a way to run all the needed microservices together.
+### Already installed with the docker setup
+### To use we will fill the docker-compose.yaml
+**Each container that we use is a ***service*****
+
+**Format yaml only with spaces**
