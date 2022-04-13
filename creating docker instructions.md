@@ -36,6 +36,11 @@ Also possible to add -DskipTests
 ## Docker Compose - a way to run all the needed microservices together.
 ### Already installed with the docker setup
 ### To use we will fill the docker-compose.yaml
+**Format yaml only with spaces**
+
 **Each container that we use is a ***service*****
 
-**Format yaml only with spaces**
+**We can create inner network for our apps**
+```
+By default Compose sets up a single network for your app. Each container for a service joins the default network and is both reachable by other containers on that network, and discoverable by them at a hostname identical to the container name.
+```
