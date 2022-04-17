@@ -1,3 +1,4 @@
+## **NOTE** - we can see events to see what happened after each command - kubectl get events
 ## **NOTE** - in kubernates console shift + page up / down to see more lines
 # Kuberneter works via -
  single responsibility principle - single concept = single responsibility
@@ -20,3 +21,8 @@ creates - service
 - pod creates a **way to keep our containers running**, gives containers an ip address, provides categorization to the containers by providing labels
 - pods running on nodes
 
+# ReplicaSet
+- a specific number of pods that are running at all times
+- if you kill a pod the replicaset will create another instead. It is always monitoring the pods, and if there are lesser pods that is needed, it creates new pod.
+- we can add more pods by using the scale command
+- 
