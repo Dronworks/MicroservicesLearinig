@@ -17,6 +17,7 @@ kubectl **get pods**
 
 ### List replicas of project
 kubectl **get replicaset**
+
 kubectl **get rs**
 
 ### List of our deployements
@@ -43,6 +44,12 @@ kubectl **scale deployment** *hello-world-rest-api* **--replicas=3**
 ### Information about what is replicaset
 kubectl **explain replicaset**
 
+### Show container name, apps names and version(images associated with replicaset) in deployement
+kubectl **get replicaset -o wide**
+
+### Add more images versions to deployement
+kubectl **set image deployment** *hello-world-rest-api* *hello-world-rest-api*=in28min/hello-world-rest-api:0.0.2.RELEASE 
+
 
 ## **NOTE** - we can write get pod | get pod**s**
 
@@ -51,14 +58,12 @@ kubectl **explain replicaset**
 
 kubectl autoscale deployment hello-world-rest-api --max=10 --cpu-percent=70
 kubectl edit deployment hello-world-rest-api #minReadySeconds: 15
-kubectl set image deployment hello-world-rest-api hello-world-rest-api=in28min/hello-world-rest-api:0.0.2.RELEASE
+
  
 gcloud container clusters get-credentials in28minutes-cluster --zone us-central1-a --project solid-course-258105
-kubectl create deployment hello-world-rest-api --image=in28min/hello-world-rest-api:0.0.1.RELEASE
 kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
 kubectl set image deployment hello-world-rest-api hello-world-rest-api=DUMMY_IMAGE:TEST
 
-kubectl set image deployment hello-world-rest-api hello-world-rest-api=in28min/hello-world-rest-api:0.0.2.RELEASE
 kubectl get events --sort-by=.metadata.creationTimestamp
 kubectl get componentstatuses
 kubectl get pods --all-namespaces
@@ -84,7 +89,6 @@ kubectl get pods
 kubectl describe pod hello-world-rest-api-85995ddd5c-msjsm
 kubectl get events --sort-by=.metadata.creationTimestamp
  
-kubectl set image deployment hello-world-rest-api hello-world-rest-api=in28min/hello-world-rest-api:0.0.2.RELEASE
 kubectl get events --sort-by=.metadata.creationTimestamp
 
  
