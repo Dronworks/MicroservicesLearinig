@@ -26,6 +26,8 @@ kubectl **get deployment**
 ### List of available services
 kubectl **get service**
 
+kubectl **get svc**
+
 ### See number of containers (and how many are ready i.e. 1/1), the ip of a pod
 kubectl **get pods -o wide**
 
