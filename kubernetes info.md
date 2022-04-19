@@ -9,9 +9,12 @@ creates - deployement, replicas and pod
 ## expose deplotement
 creates - service
 
-# Pods
+## **knows** how to work with different technology **Load Balancers**
+
+# Pods - rapper for a set of containers with an ip
 - pod- smalles deployable unit
 - container lives "inside" a pod
+- pod is a thoughway unit. It can be deleted at any time and new one can be created at any time.
 - pod can have number of containers who are sharing resources, they can talk to each other using localhost
 - pods can consist of single application containers or they can be across multiple pods
 - **namespaces** - isolations for parts of a cluster from other parts. *Exampale*: QA and DEV inside a cluster how to separate dev and qa resources? Can create namespace for QA and DEV and assosiate resources with each of them.
@@ -23,11 +26,12 @@ creates - service
 
 # ReplicaSet
 - a specific number of pods that are running at all times
-- if you kill a pod the replicaset will create another instead. It is always monitoring the pods, and if there are lesser pods that is needed, it creates new pod.
+- if you kill(kubectl delete) a pod the replicaset will create another instead. It is always monitoring the pods, and if there are lesser pods that is needed, it creates new pod. **NOTE NEW ip** will be assigned to the new pod.
 - we can add more pods by using the scale command
 - we can see what images a RS supports by running the *get rs -o wide*
 - add another version *kubectl set image deployement* {deployment name} {container name}={image name} **---->** this command will create new replicaset which will create one pod and try to launch it.
 - for each deployement (or version) there will be created a new replicaset to manage it
+- **DEPLOYMENT** insures that an update happens without a hitch
 - Deploying a "bad - non existing" image. How to debug? **kubectl get pods** will show us something like 
 ```
 NAME                                    READY   STATUS             RESTARTS   AGE
@@ -122,3 +126,31 @@ Events:
   Also we can see the events leading to this **kubectl get events --sort-by=.metadata.creationTimestamp**
 
 - agter a scuccessfull newer version of a replica it will add pods with a good image and scale down previous image. 1 -> 3 | 2 -> 2 | 3 -> 1 | 3 -> 0 ("ROLLING UPDATE STRATEGY")
+
+# Service
+- created with expose command, gets an ip address when created, not changable!
+- pods can have different ips, also in the middle a pod can die and new pod with a new ip appears. But users will always see the ip of the service and it will know what pod to access.
+- we can see in the google cloud console - we can search load balancer and we will see that we have one for the service which is looking on pods ips
+- kubectl get service will show
+```
+NAME                   TYPE           CLUSTER-IP    EXTERNAL-IP    PORT(S)          AGE
+hello-world-rest-api   LoadBalancer   10.76.2.184   34.72.24.180   8080:30107/TCP   24h
+kubernetes             ClusterIP      10.76.0.1     <none>         443/TCP          39h
+```
+we can see that kubernates acts as clusterIp
+
+# GCS
+- we can do all the scale work and replicaset actions via kubernetes engine -> workloads
+- in revision history we can see the deployement hostory
+
+# Master Node
+- ETCD (Distributed Database) - saves the state of the cluster (how many instances, etc...)
+- Kube api server (API-Server) - all the work with kubernetes including console.
+- kube-shceduler (Scheduler) - ports <-> nodes
+- kube-controller-manager (Controller Manager) - makes sure that actual state of kubernetes cluster equals the desired state. 
+
+# Worker Nodes
+- PODS (Multiple pods running containers) - several pods of a single worker node.
+- Kublet (Node agent) - monitoring what happens on the node and communicates to the master node (Controller Manager).
+- Kube proxy (Networking Component) - exposing services in pods and nodes.
+- CRI - docker, rkt etc.. (Container Runtime) - making the containers run inside pods

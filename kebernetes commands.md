@@ -50,6 +50,17 @@ kubectl **get replicaset -o wide**
 ### Add more images versions to deployement
 kubectl **set image deployment** *hello-world-rest-api* *hello-world-rest-api*=in28min/hello-world-rest-api:0.0.2.RELEASE 
 
+### Delete can be for a pod/rplicaset/service
+kubectl **delete** {some thing}
+
+### Status of node componenets
+kubectl **get componentstatuses**
+
+## GCloud
+### Log in again
+gcloud **auth login**
+
+
 
 ## **NOTE** - we can write get pod | get pod**s**
 
@@ -65,7 +76,6 @@ kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
 kubectl set image deployment hello-world-rest-api hello-world-rest-api=DUMMY_IMAGE:TEST
 
 kubectl get events --sort-by=.metadata.creationTimestamp
-kubectl get componentstatuses
 kubectl get pods --all-namespaces
  
 
