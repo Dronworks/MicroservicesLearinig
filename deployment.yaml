@@ -8,7 +8,7 @@ metadata:
   name: currency-exchange
   namespace: default
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
     # Deployment settings applicable for all pods with matching labels
@@ -29,6 +29,7 @@ spec:
     spec:
     # Containers information, Can be multiple containers inside a pod
       containers:
+      # Can redeploy new image from here, just change the version :)))
       - image: dronworks/mmv2-currency-exchange-service:0.0.12-SNAPSHOT
         imagePullPolicy: IfNotPresent
         name: mmv2-currency-exchange-service

@@ -75,9 +75,11 @@ kubectl **get service *{deployment name}* -o yaml**
 ### Diff yamls
 kubectl **diff -f *{yaml name}***
 
-### Apply new yaml
-kubectl **apply -f *{yaml name}***
+### Apply new yaml - the "-f" makes warnings - about not deploying the way it needs to be. 1 - delete 2 - deploy
+kubectl **apply -f *{yaml name}*** 
 
+### Delete deployment with label
+kubectl **delete all -l app=*{app label}***
 
 ## GCloud
 ### Log in again
@@ -146,8 +148,6 @@ kubectl get service currency-exchange -o yaml >> service.yaml
  
 
  
-kubectl delete all -l app=currency-exchange
-kubectl delete all -l app=currency-conversion
  
 kubectl rollout history deployment currency-conversion
 kubectl rollout history deployment currency-exchange
