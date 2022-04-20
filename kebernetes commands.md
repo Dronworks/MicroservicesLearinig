@@ -58,10 +58,37 @@ kubectl **delete** {some thing}
 ### Status of node componenets
 kubectl **get componentstatuses**
 
+### Get all info
+kubectl **get all**
+
+### Watch service getting ready (and maybe other things)
+kubectl **get service --watch**
+
+### Get deployments info
+kubectl **get deployments**
+
+### Get a deployment's/service yaml file
+kubectl **get deployment *{deployment name}* -o yaml**
+
+kubectl **get service *{deployment name}* -o yaml**
+
+### Diff yamls
+kubectl **diff -f *{yaml name}***
+
+### Apply new yaml
+kubectl **apply -f *{yaml name}***
+
+
 ## GCloud
 ### Log in again
 gcloud **auth login**
 
+# Curl
+### Curl request
+curl http://35.222.147.178:8100/currency-conversion-feign/from/USD/to/INR/quantity/10
+
+### Curl request every few seconds
+watch curl http://35.222.147.178:8100/currency-conversion-feign/from/USD/to/INR/quantity/10
 
 
 ## **NOTE** - we can write get pod | get pod**s**
@@ -81,11 +108,7 @@ kubectl get events --sort-by=.metadata.creationTimestamp
 kubectl get pods --all-namespaces
  
 
- 
-kubectl describe pod hello-world-rest-api-58ff5dd898-9trh2
- 
-kubectl get replicasets
-kubectl get replicaset
+
  
 
 kubectl get pods
@@ -111,26 +134,17 @@ docker push in28min/mmv2-currency-conversion-service:0.0.11-SNAPSHOT
  
 kubectl create deployment currency-exchange --image=in28min/mmv2-currency-exchange-service:0.0.11-SNAPSHOT
 kubectl expose deployment currency-exchange --type=LoadBalancer --port=8000
-kubectl get svc
-kubectl get services
-kubectl get pods
-kubectl get po
-kubectl get replicaset
-kubectl get rs
-kubectl get all
+
  
 kubectl create deployment currency-conversion --image=in28min/mmv2-currency-conversion-service:0.0.11-SNAPSHOT
 kubectl expose deployment currency-conversion --type=LoadBalancer --port=8100
- 
-kubectl get svc --watch
- 
+  
 kubectl get deployments
  
 kubectl get deployment currency-exchange -o yaml >> deployment.yaml 
 kubectl get service currency-exchange -o yaml >> service.yaml 
  
-kubectl diff -f deployment.yaml
-kubectl apply -f deployment.yaml
+
  
 kubectl delete all -l app=currency-exchange
 kubectl delete all -l app=currency-conversion

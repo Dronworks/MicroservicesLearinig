@@ -154,3 +154,24 @@ we can see that kubernates acts as clusterIp
 - Kublet (Node agent) - monitoring what happens on the node and communicates to the master node (Controller Manager).
 - Kube proxy (Networking Component) - exposing services in pods and nodes.
 - CRI - docker, rkt etc.. (Container Runtime) - making the containers run inside pods
+
+# Changes to spring projects
+Kubernetes will provide us logging, configging and naming services so we can remove from pom next artifacts:
+- spring-cloud-starter-config
+- spring-cloud-starter-netflix-eureka-client
+- spring-cloud-sleuth-zipkin
+- spring-rabbit
+
+# Automated connection variables
+For each deployement kubernetes automatically creates a variable for the ability to call requests to this service. For example **example-one** --> **EXAMPLE_ONE_SERVICE_HOST**
+
+Usage: @FeignClient(name = "example-one", url = "${EXAMPLE_ONE_SERVICE_HOST:http://localhost}:8000") 
+
+: = OR http://localhost
+
+**NOTE** if we make a mistake in the name of the deployment, we will have to redeploy the services that are depends on the mistake after redeploying the mistake.
+
+# Edit deployement via yaml
+We can download a yaml to a file, edit it and apply -f new file. Then it will be automatically make the change to the cluster. 
+
+For example by changing **replicas: 1 *->* replicas: 2** we add new pod to a deployment.
