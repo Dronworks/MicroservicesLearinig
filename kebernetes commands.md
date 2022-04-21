@@ -104,6 +104,24 @@ kubectl **get configmap *{map name}***
 ### Get a configmap's yaml
 kubectl **get configmap *{map name}* -o yaml**
 
+### Get information about a specific deployment history (mostly show the amout of changes...)
+kubectl **rollout history deployment *{deployment name}***
+
+### Undo deployment
+kubectl **rollout undo deployment *{deployment name}* --to-revision=1**
+
+### Set autoscaling
+kubectl **autoscale deployment *{deployment name}* --min=1 --max=10 --cpu-percent=70**
+
+kubectl **autoscale deployment currency-exchange --min=1 --max=10 --cpu-percent=5**
+
+### To see the usage of autoscaling (horizontal pode autoscaling)
+kubectl **get hpa**
+
+### To delete autoscaling
+kubectl **delete hpa *{deployment name}***
+
+
 
 ## **NOTE** - we can write get pod | get pod**s**
 
@@ -115,30 +133,15 @@ kubectl edit deployment hello-world-rest-api #minReadySeconds: 15
 
  
 gcloud container clusters get-credentials in28minutes-cluster --zone us-central1-a --project solid-course-258105
-kubectl expose deployment hello-world-rest-api --type=LoadBalancer --port=8080
-kubectl set image deployment hello-world-rest-api hello-world-rest-api=DUMMY_IMAGE:TEST
 
-kubectl get events --sort-by=.metadata.creationTimestamp
+
 kubectl get pods --all-namespaces
  
 
 
  
 
-kubectl get pods
-kubectl get replicaset
-kubectl get events
-kubectl get events --sort.by=.metadata.creationTimestamp
- 
-kubectl get rs
-kubectl get rs -o wide
 kubectl set image deployment hello-world-rest-api hello-world-rest-api=DUMMY_IMAGE:TEST
-kubectl get rs -o wide
-kubectl get pods
-kubectl describe pod hello-world-rest-api-85995ddd5c-msjsm
-kubectl get events --sort-by=.metadata.creationTimestamp
- 
-kubectl get events --sort-by=.metadata.creationTimestamp
 
  
 gcloud container clusters get-credentials in28minutes-cluster --zone us-central1-c --project solid-course-258105
@@ -161,8 +164,7 @@ kubectl get service currency-exchange -o yaml >> service.yaml
 
  
  
-kubectl rollout history deployment currency-conversion
-kubectl rollout history deployment currency-exchange
+
 kubectl rollout undo deployment currency-exchange --to-revision=1
  
 kubectl logs currency-exchange-9fc6f979b-2gmn8

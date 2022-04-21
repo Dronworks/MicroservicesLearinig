@@ -212,3 +212,77 @@ Go to query on top (remove the container id if want) and add **textPayload:{id}*
 **Kubernetes -> clusters -> select cluster -> scroll down -> view gke dashboard**
 
 Monitoring pods, nodes, services and more
+
+# Rollout History for a deployement
+We can see the rollout history of a deployment in kubectl. This will show a number of deployments changed. 
+
+Now lets say we make a bad deployment (bad version name for example). 
+- We will see new line in the history.
+- The app will still work (we can see two pods with same app one of them running)
+
+To rollback the mistake we can undo a deployment by typing the undo command and selecting the revision number.
+
+# Deploying new version - single pod
+when we have single pod we can see that during the deployment the server is unreachable, this is until the new pod is ready, and then also the old pod is killed.
+
+How to avoid down time?
+
+# Livingless and Readiness
+There are few technologies working in kubernetes for example PROBES:
+- Readiness - if pod is not ready the probe can see it and blocks traffic from accessing this pod.
+- Liveness - if pod is not successfully launched, the probe will try to restart it.
+
+**NOTE** spring boot actuator >=2.3 has in build PROBES.
+- actuator  /health/readiness
+- actuator  /health/leveness
+
+To enable those Probes:
+```
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+```
+management.endpoint.health.probes.enabled=true
+management.health.livenessState.enabled=true
+management.health.readinessState.enabled=true
+```
+
+When those are up:
+
+We can access them via kubernetes service ip + port + /actuator
+
+inside there are few links, going on link /health we can see next picture (note the group - liveness, readiness)
+```
+{
+  "status": "UP",
+  "groups": [
+    "liveness",
+    "readiness"
+  ]
+}
+```
+
+to access directly *liveness* or *readiness* we can add /liveness or /readiness at the end and see
+```
+{
+  "status": "UP"
+}
+```
+
+### In kubernetes we can use those probes to disable down time while deploying
+We can add those pods in the deployment.yaml configuration under container like this:
+```
+readinessProbe:
+  httpGet:
+    port: 8100
+    path: /actuator/health/readiness
+livenessProbe:
+  httpGet:
+    port: 8100
+    path: /actuator/health/liveness 
+```
+**NOTE** that if we diff the deployment.yaml we can see that kubernetes will add some defaults to the yaml
+
+### Autoscaling deployment when needed
