@@ -92,6 +92,18 @@ curl http://35.222.147.178:8100/currency-conversion-feign/from/USD/to/INR/quanti
 ### Curl request every few seconds
 watch curl http://35.222.147.178:8100/currency-conversion-feign/from/USD/to/INR/quantity/10
 
+### Create configuration map with one entry
+kubectl **create configmap currency-conversion --from-literal=*CURRENCY_EXCHANGE_URI=http://currency-exchange***
+
+### List of configmaps
+kubectl **get configmap**
+
+### Get a specific configmap
+kubectl **get configmap *{map name}***
+
+### Get a configmap's yaml
+kubectl **get configmap *{map name}* -o yaml**
+
 
 ## **NOTE** - we can write get pod | get pod**s**
 
@@ -163,11 +175,6 @@ kubectl top pod
 kubectl top nodes
 kubectl get hpa
 kubectl delete hpa currency-exchange
- 
-kubectl create configmap currency-conversion --from-literal=CURRENCY_EXCHANGE_URI=http://currency-exchange
-kubectl get configmap
- 
-kubectl get configmap currency-conversion -o yaml >> configmap.yaml
  
 watch -n 0.1 curl http://34.66.241.150:8100/currency-conversion-feign/from/USD/to/INR/quantity/10
  
