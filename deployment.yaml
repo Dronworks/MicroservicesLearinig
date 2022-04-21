@@ -33,10 +33,10 @@ spec:
       - image: dronworks/mmv2-currency-conversion-service:0.0.14-SNAPSHOT
         imagePullPolicy: IfNotPresent
         name: mmv2-currency-conversion-service
-        env:
-          - name: CURRENCY_EXCHANGE_URI
-            # The value we can get from kubectl get service. And we will get the service name.
-            value: http://currency-exchange
+        # env:
+        #   - name: CURRENCY_EXCHANGE_URI
+        #     # The value we can get from kubectl get service. And we will get the service name.
+        #     value: http://currency-exchange
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -61,3 +61,12 @@ spec:
     app: currency-conversion
   sessionAffinity: None
   type: LoadBalancer
+---
+apiVersion: v1
+data:
+  CURRENCY_EXCHANGE_URI: http://currency-exchange
+kind: ConfigMap
+metadata:
+  name: currency-conversion
+  namespace: default
+
