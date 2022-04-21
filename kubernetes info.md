@@ -182,3 +182,33 @@ url = "${CURRENCY_EXCHANGE_URI:http://localhost}:8000"
 We can download a yaml to a file, edit it and apply -f new file. Then it will be automatically make the change to the cluster. 
 
 For example by changing **replicas: 1 *->* replicas: 2** we add new pod to a deployment.
+
+# View logs in google cloud kubernetes 
+**Kubernetes -> clusters -> select cluster -> scroll down -> view logs**
+
+To skip ALL the logs from the cluster we can clear this filter on the left
+
+Then we can select on the left the specific container
+
+On the left close (minimise blocks) until get to the PODS 
+
+If we select one of the logs we can see an id * INFO [currency-conversion,**a28fb59d55233a2e**,a28fb59d55233a2e]*
+this id is generated via 
+```
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-sleuth</artifactId>
+</dependency>
+```
+and lets us to trace a call
+
+Go to query on top (remove the container id if want) and add **textPayload:{id}**
+
+**NOTE** the query string generated on top
+
+**NOTE** "Jump to Now" button
+
+# View more info(metrics) via GKE dashboard
+**Kubernetes -> clusters -> select cluster -> scroll down -> view gke dashboard**
+
+Monitoring pods, nodes, services and more
