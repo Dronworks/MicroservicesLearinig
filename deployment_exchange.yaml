@@ -4,15 +4,15 @@ metadata:
   annotations:
     deployment.kubernetes.io/revision: "1"
   labels:
-    app: currency-conversion
-  name: currency-conversion
+    app: currency-exchange
+  name: currency-exchange
   namespace: default
 spec:
   replicas: 1
   selector:
     matchLabels:
     # Deployment settings applicable for all pods with matching labels
-      app: currency-conversion
+      app: currency-exchange
   strategy:
   # How the update to this application is done
     rollingUpdate:
@@ -25,14 +25,14 @@ spec:
   # Template of matching pods for those deployment settings
     metadata:
       labels:
-        app: currency-conversion
+        app: currency-exchange
     spec:
     # Containers information, Can be multiple containers inside a pod
       containers:
       # Can redeploy new image from here, just change the version :)))
-      - image: dronworks/mmv2-currency-conversion-service:0.0.12-SNAPSHOT
+      - image: dronworks/mmv2-currency-exchange-service:0.0.12-SNAPSHOT
         imagePullPolicy: IfNotPresent
-        name: mmv2-currency-conversion-service
+        name: mmv2-currency-exchange-service
       restartPolicy: Always
 ---
 apiVersion: v1
@@ -41,8 +41,8 @@ metadata:
   annotations:
     cloud.google.com/neg: '{"ingress":true}'
   labels:
-    app: currency-conversion
-  name: currency-conversion
+    app: currency-exchange
+  name: currency-exchange
   namespace: default
 spec:
   ipFamilies:
@@ -50,10 +50,10 @@ spec:
   ipFamilyPolicy: SingleStack
   ports:
   # On these ports expose deployments which are matching the lable (selector)
-  - port: 8100
+  - port: 8000
     protocol: TCP
-    targetPort: 8100
+    targetPort: 8000
   selector:
-    app: currency-conversion
+    app: currency-exchange
   sessionAffinity: None
   type: LoadBalancer
