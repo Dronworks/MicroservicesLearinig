@@ -171,6 +171,13 @@ Usage: @FeignClient(name = "example-one", url = "${EXAMPLE_ONE_SERVICE_HOST:http
 
 **NOTE** if we make a mistake in the name of the deployment, we will have to redeploy the services that are depends on the mistake after redeploying the mistake.
 
+**NOTE2** if the service UNAVAILABLE - this automatic variable **WILL NOT BE CREATED!** during the start of the app that depends on it!
+
+# Custom variable for our app
+We will change the uri to point to our variable
+
+url = "${CURRENCY_EXCHANGE_URI:http://localhost}:8000"
+
 # Edit deployement via yaml
 We can download a yaml to a file, edit it and apply -f new file. Then it will be automatically make the change to the cluster. 
 
