@@ -3,8 +3,5 @@ data:
   CURRENCY_EXCHANGE_URI: http://currency-exchange
 kind: ConfigMap
 metadata:
-  creationTimestamp: "2022-04-21T12:15:12Z"
   name: currency-conversion
   namespace: default
-  resourceVersion: "2589302"
-  uid: b2b58ac0-f8fb-439f-a005-6a8b29ad6991
