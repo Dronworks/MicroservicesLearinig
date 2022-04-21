@@ -33,6 +33,9 @@ spec:
       - image: dronworks/mmv2-currency-conversion-service:0.0.14-SNAPSHOT
         imagePullPolicy: IfNotPresent
         name: mmv2-currency-conversion-service
+        envFrom:
+          - configMapRef:
+              name: currency-conversion
         # env:
         #   - name: CURRENCY_EXCHANGE_URI
         #     # The value we can get from kubectl get service. And we will get the service name.
