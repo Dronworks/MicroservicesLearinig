@@ -103,3 +103,86 @@ Add a file **limits-service-qa.properties**
 And by changing the profile to QA in the client we will get those properites. Also the link will be http://localhost:8888/limits-service/qa
 
 **NOTE2** If we have two properties one of them we rewrite in the profile file and one not, the config server will fill one from the default file and one from the profile (overwrite) hence the priority order.
+
+**NOTE3** if we use setting with "-" it will automatically convert it: **test-app** to **testApp**. If the conversion is more complex we can use **@JsonProperty("theName")**
+
+# Additional Info - Services consuming using FEIGN
+- To install add feign dependency
+    ```
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-openfeign</artifactId>
+    </dependency>
+    ```
+- In application Main add Feign support
+    ```
+    @EnableFeignClients
+    public class CurrencyConversionServiceApplication {
+    ```
+- Create feign proxy client
+    ```
+    @FeignClient(value = "currency-exchange", url = "localhost:8000")
+    public interface CurrencyExchangeProxy {
+        @GetMapping("/currency-exchange/from/{from}/to/{to}")
+        public CurrencyConversion retrieveExchangeValue(@PathVariable String from, @PathVariable String to);
+    ```
+- Feign proxy client using Eureka
+    ```
+    // Eureka:
+    @FeignClient(value = "currency-exchange")
+    public interface CurrencyExchangeProxy {
+        @GetMapping("/currency-exchange/from/{from}/to/{to}")
+        public CurrencyConversion retrieveExchangeValue(@PathVariable String from, @PathVariable String to);
+    ```
+- **NOTE - IN OLDER VERSIONS** we used Ribbon. To work with it we had to add a dependency (> 2.0.0 it is ...starter-netflix-ribbon)
+    ```
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-ribbon</artifactId>
+    </dependency>
+    ```
+    In the properties file we need to set a list of LB servers
+    ```
+    currency-exchange-service.ribbon.listOfServers=http://localhost:8000,http://localhost:8001
+    ```
+    In the proxy class we need to make this settings
+    ```
+    @FeignClient(name="currency-exchange-service")
+    @RibbonClient(name="currency-exchange-service)
+    public interface CurrencyExchangeProxy {
+    ```
+
+# Additional Info - Same fields in the consumer and producer services
+If we access one service from another and one service have all the data that the second is returning plus additional data we can do something cool with the classes:
+
+- Producer service Class
+    ```
+    private Long id;
+    private String from;
+    private String to;
+    private BigDecimal conversionMultiplier;
+    private String environment;
+    ```
+- Consumer service Class
+    ```
+    private Long id;
+    private String from;
+    private String to;
+    private BigDecimal conversionMultiplier;
+    private BigDecimal quantity;
+    private BigDecimal totalCalculatedAmount;
+    private String environment;
+    ```
+- In the Consumer controller we can call the producer and get from it the CUNSUMER class!
+    ```
+    ResponseEntity<CurrencyConversion> forEntity = new RestTemplate().getForEntity(
+                "http://localhost:8000/currency-exchange/from/{from}/to/{to}",
+                CurrencyConversion.class,
+                uriConfigs);
+    CurrencyConversion currencyConversion = forEntity.getBody();
+    ```
+    and add the consumer data
+    ```
+    currencyConversion.setQuantity(quantity);
+    currencyConversion.setTotalCalculatedAmount(quantity.multiply(currencyConversion.getConversionMultiplier()));
+    ```
