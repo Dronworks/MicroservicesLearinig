@@ -75,3 +75,18 @@ DataSourceAutoConfiguration matched:
 
 # Run code with app start
 We can run a code with implementing CommandLineRunner, and it will run with the spring start.
+
+# Get spring variables
+For example get the port in the code:
+```
+@Autowired
+private Environment environment;
+...
+environment.getProperty("local.server.port")
+```
+
+# Set server port per run
+In the run configuration in the VM arguments
+```
+-DserverPort=<port>
+```
