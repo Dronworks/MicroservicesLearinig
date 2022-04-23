@@ -70,4 +70,17 @@ We can do this 2 ways:
     values (1002, 25, '', 'AUD', 'INR');
     ```
 # Info
-H2 works with standard @Repository class.
+- H2 works with standard @Repository class.
+    ```
+    public interface UserRepository extends JpaRepository<User, Long> {
+    }
+    ```
+- Repository **MAGIC!** - we can run query for example by 2 fields (**select * from table where from= and to= ...**) by adding functions without body to the repository:
+    ```
+    ExchangeValue findByFromAndTo(String from, String to);
+    ```
+- We cant have fields with names like "from" in our entity. If we have we need to set another name for the DB.
+    ```
+    @Column(name="from_col")
+    private String from;
+    ```
