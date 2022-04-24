@@ -3,17 +3,17 @@
 
 ## ***CLIENT***: 
 1. In **start.spring.io** select
-```
-Config Client SPRING CLOUD CONFIG
-Client that connects to a Spring Cloud Config Server to fetch the application's configuration.
-```
-In pom this will look like this:
-```
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-starter-config</artifactId>
-</dependency>
-```
+    ```
+    Config Client SPRING CLOUD CONFIG
+    Client that connects to a Spring Cloud Config Server to fetch the application's configuration.
+    ```
+    In pom this will look like this:
+    ```
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-starter-config</artifactId>
+    </dependency>
+    ```
 2. Also we need to access the config server from properties:
 - Get configurations from config server - optional: is for starting service while config server not active.
 
@@ -37,18 +37,20 @@ In pom this will look like this:
 
 ## ***SERVER***
 1. In **start.spring.io** select
-```
-Config Server SPRING CLOUD CONFIG
-Central management for configuration via Git, SVN, or HashiCorp Vault.
-```
-In pom this will look like this:
-```
-<dependency>
-    <groupId>org.springframework.cloud</groupId>
-    <artifactId>spring-cloud-config-server</artifactId>
-</dependency>
-```
-2. In properties file next settings should be applied
+    ```
+    Config Server SPRING CLOUD CONFIG
+    Central management for configuration via Git, SVN, or HashiCorp Vault.
+    ```
+    In pom this will look like this:
+    ```
+    <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-config-server</artifactId>
+    </dependency>
+    ```
+2. In application.properties file next settings should be applied
+- Regular properties
+
     **spring.application.name=spring-cloud-config-server**
 
     **server.port=8888**
@@ -62,6 +64,13 @@ In pom this will look like this:
 - To avoid github master which is main error
 
     **spring.cloud.config.server.git.default-label=master**
+
+3. In the main application add config server
+    ```
+    @SpringBootApplication
+    @EnableConfigServer
+    public class SpringCloudConfigServerApplication {
+    ```
 
 3. In the git repository we need to create a file with the app name and put our properties there for example
 
@@ -105,6 +114,216 @@ And by changing the profile to QA in the client we will get those properites. Al
 **NOTE2** If we have two properties one of them we rewrite in the profile file and one not, the config server will fill one from the default file and one from the profile (overwrite) hence the priority order.
 
 **NOTE3** if we use setting with "-" it will automatically convert it: **test-app** to **testApp**. If the conversion is more complex we can use **@JsonProperty("theName")**
+
+# ===============================================================
+
+# EUREKA -naming service
+**enable a client** and **create an Eureka server**.
+
+## ***CLIENT***: 
+1. In **start.spring.io** select
+    ```
+    Eureka Discovery Client SPRING CLOUD DISCOVERY
+    A REST based service for locating services for the purpose of load balancing and failover of middle-tier servers.
+    ```
+    In pom this will look like this:
+    ```
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+    ```
+2. In application.properties we need to set the link to register.
+
+    **eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka**
+
+3. To use the naming server in order to communicate between apps (before we use api gateway) we need to add an annotation to the proxy class:
+    ```
+    @FeignClient(value = "currency-exchange")
+    public interface CurrencyExchangeProxy {
+    ```
+    And thats it! See more info in Additional Info - Feign
+
+3. **NOTE** in older versions of spring we had to add next annotation to man application
+    ```
+    @EnableDiscoveryClient
+    ```
+4. **NOTE2** in dockers there are no local hosts because of different environments (different dockers) so **OR** we can change to the name of the server in **properties file** to naming-server (as we gave to the image) - **OR** in **docker-compose.yaml**
+
+## ***SERVER***
+1. In **start.spring.io** select
+    ```
+    Eureka Server SPRING CLOUD DISCOVERY
+    spring-cloud-netflix Eureka Server.
+    ```
+    Note we can also select the config server client, devtools, actuator... But they are not neccessary.
+
+    In pom this will look like this:
+    ```
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+    </dependency>
+    ```
+2. In application.properties file add
+- Regular properties
+
+    **server.port=8761**
+
+    **spring.application.name=naming-server**
+
+- We dont want to register self
+
+    **eureka.client.register-with-eureka=false**
+
+    **eureka.client.fetch-registry=false**
+    
+3. In the main application add eureka server
+    ```
+    @SpringBootApplication
+    @EnableEurekaServer
+    public class NamingServerApplication {
+    ```
+
+
+# ===============================================================
+
+# API-GATEWAY
+Api Gateway letting us have a single entry point for all our and external apps it lets us centarlizing:
+- Set a single Authentication, Authorization and Security configurations.
+- Limit rates when needed.
+- Work with faults (when server is unavailable).
+- Aggrigate service
+- Logging
+- Debugging if needed
+- Filtering
+
+**enable a client** and **create an Api-Gateway server**.
+
+## ***CLIENT***: 
+1. Client side is easy, we just need in the feign proxy to point to API-GATEWAY like this
+    ```
+    @FeignClient(value = "API-GATEWAY")
+    public interface CurrencyExchangeProxy {
+
+        @GetMapping("/CURRENCY-EXCHANGE/currency-exchange/from/{from}/to/{to}")
+        public CurrencyConversion retrieveExchangeValue(@PathVariable String from, @PathVariable String to);
+    }
+    ```
+
+## ***SERVER***
+1. In **start.spring.io** select both
+    ```
+    Eureka Discovery Client SPRING CLOUD DISCOVERY
+    A REST based service for locating services for the purpose of load balancing and failover of middle-tier servers.
+
+    Gateway SPRING CLOUD ROUTING
+    Provides a simple, yet effective way to route to APIs and provide cross cutting concerns to them such as security, monitoring/metrics, and resiliency.
+    ```
+    Note we can also select the config server client, devtools, actuator... But they are not neccessary.
+
+    In pom this will look like this:
+    ```
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-gateway</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+    </dependency>
+    ```
+2. In application.properties file add
+- Regular properties
+
+    **server.port=8765**
+
+    **spring.application.name=api-gateway**
+
+- Connect to eureka to get app urls
+
+    **eureka.client.serviceUrl.defaultZone=http://localhost:8761/eureka**
+
+    **spring.cloud.gateway.discovery.locator.enabled=true**
+
+- If we want to use conventional url (lower case)
+    
+    **spring.cloud.gateway.discovery.locator.lower-case-service-id=true**
+    
+
+## ***Accessing the Config***
+To work with api gateway the service api access eureka and builds an url with it, like this:
+
+For example exchange server is registered like this **CURRENCY-EXCHANGE**
+
+The url will be
+**http://localhost:8765/CURRENCY-EXCHANGE** *plus the endpoint like* **/currency-exchange/from/USD/to/INR**
+
+## ***Wokring with API-GATEWAY***
+
+### **Filtering**
+Example of filtering with same output + logging
+```
+@Component
+public class LoggingFilter implements GlobalFilter {
+
+private Logger logger = LoggerFactory.getLogger(LoggingFilter.class);
+
+@Override
+public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    logger.info("Path of the request -> {}", exchange.getRequest().getPath());
+    return chain.filter(exchange); // Return the same.
+}
+}
+```
+
+### **Routing**
+Simple route example with headers:
+```
+Function<PredicateSpec, Buildable<Route>> routeFunc = p -> p.path("/get")
+    .filters(f -> f
+        .addRequestHeader("MyHeader", "MyUri")
+        .addRequestParameter("Param", "MyValue"))
+    .url("http://httpbin.org:80")
+return builder.routes().route(routeFunc).build();
+``` 
+And we can access next link and see our sent param and headers
+    
+**localhost:8765/get**
+
+We can route the calls ourselves (Also we can disconnect from discovery, **by closing the setting in application.properties**, if we would like...)
+
+``` 
+@Configuration
+public class ApiGatewayConfiguration {
+
+@Bean
+public RouteLocator gatewayRouter(RouteLocatorBuilder routeLocatorBuilder) {
+    return routeLocatorBuilder.routes()
+            .route(p -> p.path("/get") // can be matched on multiple parameters!
+            .filters(f -> f.addRequestHeader("MyHeader", "MyUri")
+                    .addRequestParameter("SomeParam", "Param"))
+            .uri("http://httpbin.org:80"))
+            .route(p -> p.path("/currency-exchange/**")
+                    .uri("lb://CURRENCY-EXCHANGE")) // Load Balance - gets from EUREKA
+            .route(p -> p.path("/currency-conversion/**")
+                    .uri("lb://CURRENCY-CONVERSION")) // Load Balance - gets from EUREKA
+            .route(p -> p.path("/currency-conversion-feign/**")
+                    .uri("lb://CURRENCY-CONVERSION")) // Load Balance - gets from EUREKA
+            .route(p -> p.path("/currency-conversion-new/**")
+                    .filters(f -> f.rewritePath("/currency-conversion-new/(?<segment>.*)",
+                            "/currency-conversion-feign/${segment}")) // Rewrite path with the segment that comes after
+                    .uri("lb://CURRENCY-CONVERSION"))
+            .build();
+    }
+
+}
+```
+
+
+# ===============================================================
+
 
 # Additional Info - Services consuming using FEIGN
 - To install add feign dependency
