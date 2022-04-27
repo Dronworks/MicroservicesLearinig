@@ -115,6 +115,26 @@ And by changing the profile to QA in the client we will get those properites. Al
 
 **NOTE3** if we use setting with "-" it will automatically convert it: **test-app** to **testApp**. If the conversion is more complex we can use **@JsonProperty("theName")**
 
+## ***Changing the Config***
+When we make change to the git repository we need to refresh the Spring apps that use this config. To do so we have to install actuator for the application:
+
+```
+Spring Boot Actuator OPS
+Supports built in (or custom) endpoints that let you monitor and manage your application - such as application health, metrics, sessions, etc.
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```   
+
+And use the link:
+    
+**{app link}/actuator/refresh**
+
+**NOTE** to change All instances of a service we need to add a support for spring bus (usually by rabbitmq). To do so see:
+
+**https://www.baeldung.com/spring-cloud-bus**
+
 # ===============================================================
 
 # EUREKA -naming service
@@ -252,7 +272,7 @@ Api Gateway letting us have a single entry point for all our and external apps i
     **spring.cloud.gateway.discovery.locator.lower-case-service-id=true**
     
 
-## ***Accessing the Config***
+## ***Accessing the Gateway***
 To work with api gateway the service api access eureka and builds an url with it, like this:
 
 For example exchange server is registered like this **CURRENCY-EXCHANGE**
@@ -321,6 +341,80 @@ public RouteLocator gatewayRouter(RouteLocatorBuilder routeLocatorBuilder) {
 }
 ```
 
+# ===============================================================
+
+# ZIPKIN
+- Zipkin lets us trace the requests. One of the important things to trace requests is to assign an id to them, so we can see the request path between services. 
+
+- When we use log in the application we will see the ID added automatically to each logged message.
+
+    *2022-04-26 18:15:02.978  INFO **[currency-exchange,05bfdd8d71fabd95,05bfdd8d71fabd95]** 5732 --- [nio-8000-exec-5] CurrencyExchangeController               : retrieveExchangeValue*
+
+    we will see this id in the tracing path in zipkin.
+
+- Rabbit MQ is good to store messages when zipkin is offline.
+
+**enable a client** and **create an Api-Gateway server**.
+
+## ***CLIENT***: 
+1. In **start.spring.io** select
+    ```
+    Sleuth OBSERVABILITY
+    Distributed tracing via logs with Spring Cloud Sleuth.
+    
+    Zipkin Client OBSERVABILITY
+    Distributed tracing with an existing Zipkin installation and Spring Cloud Sleuth Zipkin.
+    ```
+    In pom this will look like this:
+    ```
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-sleuth</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+    </dependency>
+    ```
+
+    **IF** we want to use RABBITMQ we need to add next dependency:
+    ```
+    Spring for RabbitMQ MESSAGING
+    Gives your applications a common platform to send and receive messages, and your messages a safe place to live until received.
+    ```
+    In pom this will look like:
+    ```
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-amqp</artifactId>
+    </dependency>
+    ```
+
+2. Also in application.properties we need to set the logging amout as well as adding the ids, where tracing percentage of requests 1.0 - all | 0.1 - 10% | 0.05 - 5%
+
+    **spring.sleuth.sampler.probability=1.0**
+
+## ***SERVER***
+There are three ways to start zipkin.
+1. Easiest - via docker:
+
+    **docker run -p 9411:9411 openzipkin/zipkin:2.23**
+2. Download and run jar:
+
+    **java -jar zipking-server-2.5.2-exec.jar**
+
+3. Install Rabbit MQ on your PC or Run it via docker. Then run the zipkin using docker or jar. 
+
+    **NOTE** see docker-compose.yaml
+- Docker - in docker-compose.yaml in zipkin server add 
+    ```
+    RABBIT_URI: amqp://guest:guest@rabbitmq:5672
+    ```
+- Jar:
+    ```
+    set RABBIT_URL=amqp://guest:guest@rabbitmq:5672
+    java -jar zipking-server-2.5.2-exec.jar
+    ```
 
 # ===============================================================
 
@@ -371,6 +465,8 @@ public RouteLocator gatewayRouter(RouteLocatorBuilder routeLocatorBuilder) {
     public interface CurrencyExchangeProxy {
     ```
 
+# ============================================
+
 # Additional Info - Same fields in the consumer and producer services
 If we access one service from another and one service have all the data that the second is returning plus additional data we can do something cool with the classes:
 
@@ -405,3 +501,50 @@ If we access one service from another and one service have all the data that the
     currencyConversion.setQuantity(quantity);
     currencyConversion.setTotalCalculatedAmount(quantity.multiply(currencyConversion.getConversionMultiplier()));
     ```
+
+# ============================================
+
+# Additional Info - Actuator
+Actuator add lots of endpoints for our application for managing. 
+
+For example: **actuator/health** - will return the status of our app. Health also has Readiness and Livingless (see kubernetes info.md).
+
+To enable actuator:
+in **start.spring.io** select
+```
+Spring Boot Actuator OPS
+Supports built in (or custom) endpoints that let you monitor and manage your application - such as application health, metrics, sessions, etc.
+```
+In pom it will look like this:
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+In application.properites we need to open the links we need using
+
+**management.endpoints.web.exposure.include={apps names / '*' for all}**
+
+
+# ============================================
+
+# Additional Info - DevTools
+Dev tools help us to fast update application after code changes (if app takes 10 seconds to start, this will make the cahnges to appear in 2 seconds).
+
+To enable dev tools:
+in **start.spring.io** select
+```
+Spring Boot DevTools DEVELOPER TOOLS
+Provides fast application restarts, LiveReload, and configurations for enhanced development experience.
+```
+In pom it will look like this:
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <scope>runtime</scope>
+    <optional>true</optional>
+</dependency>
+```
+To use Devtools - after changing the project run build. OR in eclipse save the file.
