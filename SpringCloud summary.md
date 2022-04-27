@@ -548,3 +548,159 @@ In pom it will look like this:
 </dependency>
 ```
 To use Devtools - after changing the project run build. OR in eclipse save the file.
+
+# ============================================
+
+# Additional Info - Fault Tollerance
+In microservices one service is depending on another service. If one service is down all the chain of services will fail. Also slow service may impact our chain! How do we deal with it?
+
+Strategies:
+- **Default fallback** response.
+    
+    For example: a shopping site is not available we can sent back some default shopping products untill the site is available.
+
+- **Circuite breaker** - if we know next service on the chain is down, can we stop the chain before the request goes there?
+
+- **Temporary failure** - can we retry few times before returning some default or bad response.
+
+- **Limit access** - we can limit access to a service that is low on resources for example.
+
+Spring solution: **Resilience4j** link: https://resilience4j.readme.io/docs/getting-started-3
+
+**NOTE** Resilience4j was developed as a successer of Hysterix after java 8 added the functional programming.
+
+## ***CLIENT***: 
+1. In **start.spring.io** select
+    ```
+    Resilience4J SPRING CLOUD CIRCUIT BREAKER
+    Spring Cloud Circuit breaker with Resilience4j as the underlying implementation.
+    ```
+    In pom this will look like this:
+    ```
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+    </dependency>
+    ```
+
+**NOTE** By resilience site - you need actuator, aop, and resilience-springboot2 for it to work if you dont want to get it from start.spring.io
+
+
+## ***Client - Code examples***
+All the examples go throgh a controller that we create for this behavior.
+
+**@RestController
+public class CircuitBreakerController {**
+
+1. **Retries** - lets put some dummy server, that doesn't exist, and we can see the retry.
+    - Default retry (name="default") - the default retry we can see by logging the firest line of the function. We can see by default it retries 3 times, and only then return error.
+        ```
+        @RestController
+        public class CircuitBreakerController {
+
+            Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+
+
+            @GetMapping("/sample-api")
+            @Retry(name="default")
+            public String sampleApi() {
+                logger.info("Sample api call received");
+                ResponseEntity<String> forEntity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy", String.class);
+
+            return forEntity.getBody();
+        }
+        ```
+    - Our Custom retries - for this we will change the default name to some other name:
+        ```
+        @Retry(name="some-name")
+        ```
+        And in application.properties we need to add next property with our custom name.
+        
+        **resilience4j.retry.instances.some-name.max-attempts=5**
+        
+    - Retry with fallback method - we can call for a method that will create some default response on failure for us.
+        ```
+        @Retry(name="sample-api-prop", fallbackMethod = "hardcodedResponse")
+        ...
+        public String hardcodedResponse(Exception ex) {
+            return "fallback-response";
+        }
+        ```
+        **NOTE** we can same method with multiple excheption handling for example:
+        ```
+        public String hardcodedResponse(NullPointerException ex) { 
+            return "null-pointer-response";
+        }
+        ```
+    **More configurations for retry in application.properties**
+    - Waiting time before retry 
+
+        **resilience4j.retry.instances.sample-api-prop.wait-duration=1s**
+    
+    - Watiting exponential time before retry - first time we wait duration, next time we wait twice more, and next time twice more... (**Useful when service is temporary down**)
+
+        **resilience4j.retry.instances.sample-api-prop.enable-exponential-backoff=true**
+
+But what if the server is actually down? Retries wont work. And we can use circuite breaker
+    
+2. **Circuite Breaker** we can test circuite breaker with watch command. **watch -n 0.1 curl http://localhost:8000/sample-api** this will send 10 requests per second. With the circuite breaker we can see the fallback in the app, and in the log we can see that at start we are entering the endpoint funcition, and after a while we just getting the fallback resopnse without entering the function!
+
+    Code example:
+
+    ```
+    @GetMapping("/sample-api")
+    @CircuitBreaker(name="default", fallbackMethod = "hardcodedResponse")
+    public String sampleApi() {
+        ResponseEntity<String> forEntity = new RestTemplate().getForEntity("http://localhost:8080/some-dummy", String.class);
+        return forEntity.getBody();
+    }
+    ```
+
+    Circuite Breaker has 3 states: 
+    - Closed - all requests going to the endpoint and return good.
+    - Opened - all requests are blocked and default fallback is returned.
+    - Half-opened - some of the request actually getting through and the rest are automatically default fallback.
+
+    ***Lifecicle:*** Once we start, the circuite breaker starts in a **Closed state**. After like 90% of the requests are failing, it we become **Opened state** and all the responses are fallback. Now it will wait some time and become **Half-opened state** it will try to send an amount of messages to the actual endpoint(conigurable) and if the next requests will all success, it we become **Closed** if not it will return for more time to **Open**.
+    
+    We can see existing configuration for the circuite breaker in the https://resilience4j.readme.io/docs/circuitbreaker.
+    
+    Example: **resilience4j.circuitbreaker.instances.default.failure-rate-threshold=90** This will open the breaker after 90% of the requests fail. (default is 50%)
+
+3. **Rate Limiter** - for example we want to send only 10000 requests in 10 seconds. Configurring limits (we can configure different limits for different names):
+
+    Code Example:
+
+    ```
+    @GetMapping("/sample-api")
+    @RateLimiter(name="sample-api")
+    public String sampleApi() {
+        logger.info("Sample api call received");
+        return "Sample";
+    }
+    ```
+
+    Example: 2 requests in every 10 seconds:
+    
+    **resilience4j.ratelimiter.instances.sample-api.limit-for-period=2**
+
+    **resilience4j.ratelimiter.instances.sample-api.limit-refresh-period=10s**
+
+4. **Concurrent calls limiter** - we can set how many concurrent calls can be made same time to a service. This is called **bulkhead**.
+
+    Code Exmaple:
+    ```
+    @GetMapping("/sample-api")
+    @Bulkhead(name="default")
+    public String sampleApi() {
+        logger.info("Sample api call received");
+        return "Sample";
+    }
+    ```
+
+    In application.properties:
+    
+    **resilience4j.bulkhead.instances.default.max-concurrent-calls=10**
+
+
+**NOTE** in older spring versions Hysticx was in use.
