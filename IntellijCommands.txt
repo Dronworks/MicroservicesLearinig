@@ -4,6 +4,8 @@ ctrl+N - open class.
 
 ctrl+alt+left/right move betwen classes.
 
+ctrl+alt+shift+left/right - move parameters inside function
+
 ctrl+alt+shift+N - Symbol search - for example method name all over.
 
 When searching file, add "/" at the end to search folders.
