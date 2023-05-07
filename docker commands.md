@@ -1,7 +1,7 @@
 ### Download or launch local image: (short for *docker container run*)
 docker **run in28min/todo-rest-api-h2:1.0.0.RELEASE**
 
-### Run image with port forwarding:
+### Run image with port forwarding: (LEFT is our, RIGHT is docker)
 docker **run -p 5000:5000 in28min/todo-rest-api-h2:1.0.0.RELEASE**
 
 ### Run image on different process: (-dETAUCHED)
@@ -101,3 +101,9 @@ docker **exec *docker-name* *command* *params***
 ### Stop docker gracefull and force
 * docker **stop** ***docker name or image***
 * docker **kill** ***docker name or image***
+
+### Map volume
+docker **run -v `localFS:dockerFS` *appname***
+
+### Docker logs
+docker **logs *dockerid***
