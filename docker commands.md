@@ -94,3 +94,10 @@ docker run -p **9411:9411 openzipkin/zipkin:2.23**
 
 ### Running images with docker-compose - in the folder with docker-complse.yaml
 **docker-compose up**
+
+### Execute command on a running container
+docker **exec *docker-name* *command* *params***
+
+### Stop docker gracefull and force
+* docker **stop** ***docker name or image***
+* docker **kill** ***docker name or image***
