@@ -16,8 +16,18 @@ docker **logs b95f35def53088cbfd5c585690dab88375c061ac59a4b7eae085997e43851f74**
 ### Show log contigniusly on process:
 docker **logs -f b95f35def53088cbfd5c585690dab88375c061ac59a4b7eae085997e43851f74**
 
+### Show running and stopped dockers
+docker **ps**
+docker **ps -a**
+
 ### Show local images:
 docker **images**
+
+## Remove docker
+docker **rm** ***docker-id***
+
+### Remove image - need to remove all containers with this image before
+docerk **rmi** ***image-id***
 
 ### Show containers:
 docker **container ls**
