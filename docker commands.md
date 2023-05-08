@@ -110,3 +110,8 @@ docker **logs *dockerid***
 
 ### Get inside docker logs 
 docker **attach *dockerid***
+
+### Set Environment variable
+docker **run -e VARIABLE=value app-name**
+
+To find what environment variables are currently set to a container run `docker inspect name` and look under **Config -> Env**.
