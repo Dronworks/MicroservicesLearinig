@@ -10,3 +10,5 @@
     * hence we will run `docker run -it`
 
 * To persist data on the docker (for example not to loose all mysql saved data) we can write my sql data to a local file system using **-v localFS:dockerFS**. Example: `docker run -v /opt/datadir:/var/lib/mysql mysql`
+* Docker file should start with FROM to get the base image.
+* Docker file can be made easy if after running the needed commands on docker type history and copy to notepad, and you can see the steps :)

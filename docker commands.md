@@ -107,3 +107,6 @@ docker **run -v `localFS:dockerFS` *appname***
 
 ### Docker logs
 docker **logs *dockerid***
+
+### Get inside docker logs 
+docker **attach *dockerid***
