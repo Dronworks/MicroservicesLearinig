@@ -26,8 +26,14 @@ docker **images**
 ## Remove docker
 docker **rm** ***docker-id***
 
+## Remove ALL stopped dockers
+docker **rm $(docker ps --filter status=exited -q)**
+
 ### Remove image - need to remove all containers with this image before
-docerk **rmi** ***image-id***
+docker **rmi** ***image-id***
+
+## Remove ALL images not in use
+docker **rmi -f $(docker images -aq)**
 
 ### Show containers:
 docker **container ls**
