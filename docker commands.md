@@ -80,6 +80,9 @@ docker **container inspect**
 ### Remove stopped containers from ls
 docker **container prune**
 
+### Remove all images
+docker **image prune -a**
+
 ### Show what happened to dockers - open in another tab
 docker **events** 
 
