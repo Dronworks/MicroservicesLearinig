@@ -25,3 +25,28 @@
     CMD["5"]
     ```
 * You can **OVERRIDE** the **ENTRYPOINT** with `--entrypoint command` flag
+
+### Multiple dockers to work together
+We may run multiple dockers but how will they communicate with each other?
+* We may use **--liks** - to link two containers together. For example: `docker run --link redis:redis`. Remember thats why we need to give names.The links command adds entry to hosts file (dns).
+* We may have multiple links. They are deprecated!
+* Better use Docker compose: 
+1. Get all names and put with semicolumn in the file
+2. Inside add key: **image** and values is the image to use.
+3. Add **prts** and port values (as a list)
+4. Add links with the names of the application in this file.
+5. If image is ours and not yet build we can replace **image** with **build** with the location of application code and docker file. 
+
+## Docker Complose
+Can have different versions (like v1 - where we have app names with ':')
+- v1 is bad for not local host.
+- v1 is not supporting order of apps
+
+v2 works with **services** and under are the apps.
+- From v2 specify **version:** at the top of the file
+- V2 creates network automatically and attach containers to that network. Lonks no need, communicate by name.
+- depends_on - will add order of the containers
+
+V3 same as v2:
+- supports docker swarm
+- some features removed some added
