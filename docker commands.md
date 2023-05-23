@@ -134,4 +134,5 @@ docker **run --name=[name]**
 - docker **build . -f [docker file name] -t name** - will build using non default docker file name
 
 ### Docker image actual size
-docker **system df** - this will show the actual size, because same layeres are reused and dont spend more size.
+- docker **system df** - this will show the actual size, because same layeres are reused and dont spend more size.
+- docker **system df -v** - this will show the actual size per image.
