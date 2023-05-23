@@ -52,3 +52,32 @@ V3 same as v2:
 - some features removed some added
 
 Networks: we can add **networks:** to the file with list of networks. Then in the app we may specify **networks:** that this app can use.
+
+## Local repository
+We can have our local repository just run it as docker :)
+
+### Copy an image from Docker Hub to your registry
+
+You can pull an image from Docker Hub and push it to your registry. The following example pulls the ubuntu:16.04 image from Docker Hub and re-tags it as my-ubuntu, then pushes it to the local registry. Finally, the ubuntu:16.04 and my-ubuntu images are deleted locally and the my-ubuntu image is pulled from the local registry.
+
+    Pull the ubuntu:16.04 image from Docker Hub.
+
+ docker pull ubuntu:16.04
+
+Tag the image as localhost:5000/my-ubuntu. This creates an additional tag for the existing image. When the first part of the tag is a hostname and port, Docker interprets this as the location of a registry, when pushing.
+
+ docker tag ubuntu:16.04 localhost:5000/my-ubuntu
+
+Push the image to the local registry running at localhost:5000:
+
+ docker push localhost:5000/my-ubuntu
+
+Remove the locally-cached ubuntu:16.04 and localhost:5000/my-ubuntu images, so that you can test pulling the image from your registry. This does not remove the localhost:5000/my-ubuntu image from your registry.
+
+ docker image remove ubuntu:16.04
+
+ docker image remove localhost:5000/my-ubuntu
+
+Pull the localhost:5000/my-ubuntu image from your local registry.
+
+ docker pull localhost:5000/my-ubuntu
