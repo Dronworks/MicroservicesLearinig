@@ -50,3 +50,5 @@ v2 works with **services** and under are the apps.
 V3 same as v2:
 - supports docker swarm
 - some features removed some added
+
+Networks: we can add **networks:** to the file with list of networks. Then in the app we may specify **networks:** that this app can use.
