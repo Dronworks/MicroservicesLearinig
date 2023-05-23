@@ -127,3 +127,8 @@ To find what environment variables are currently set to a container run `docker 
 
 ## Docker with a name 
 docker **run --name=[name]**
+
+### Build docker image
+- docker **build .** - this will build an image without name
+- docker **build . -t name** - this will build an image with tag (name)
+- docker **build . -f [docker file name] -t name** - will build using non default docker file name
