@@ -95,3 +95,11 @@ All docker run within namespace (for example in linux processID).
 - For example cpu by **--cpus** e.g., `docker run --cpus=.5 ubuntu`
 - For examole memory bt **--memory** e.g., `docker run --memory=100m ubuntu`
 - https://docs.docker.com/config/containers/resource_constraints/
+
+
+## Container layer
+Container layer is Read/Write (image layer is read only), BUT not persistant. If we want to change a file in the image it will be copied to container layer and changed there also after container is dead, this change will be deleted. 
+- To preserve data we need to work with volumes
+- Volume mount - creates a folder inside /var/lib/docker/volumes/
+- Bind mount - binds to different "real location"
+- Inside /var/lib/docker/[file syste] you can see the builed layers of a docker. (ubunty for example is aufs). Files are in diff folder.
