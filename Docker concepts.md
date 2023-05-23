@@ -94,4 +94,4 @@ All docker run within namespace (for example in linux processID).
 ### Limit the resources for the docker
 - For example cpu by **--cpus** e.g., `docker run --cpus=.5 ubuntu`
 - For examole memory bt **--memory** e.g., `docker run --memory=100m ubuntu`
-- 
+- https://docs.docker.com/config/containers/resource_constraints/
