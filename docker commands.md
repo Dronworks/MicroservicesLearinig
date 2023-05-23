@@ -121,3 +121,6 @@ docker **attach *dockerid***
 docker **run -e VARIABLE=value app-name**
 
 To find what environment variables are currently set to a container run `docker inspect name` and look under **Config -> Env**.
+
+## Docker with a name 
+docker **run --name=[name]**
