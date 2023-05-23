@@ -103,3 +103,4 @@ Container layer is Read/Write (image layer is read only), BUT not persistant. If
 - Volume mount - creates a folder inside /var/lib/docker/volumes/
 - Bind mount - binds to different "real location"
 - Inside /var/lib/docker/[file syste] you can see the builed layers of a docker. (ubunty for example is aufs). Files are in diff folder.
+- We can enter each subfolder there and see the files that are added in this layer.
