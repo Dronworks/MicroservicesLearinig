@@ -81,3 +81,17 @@ Remove the locally-cached ubuntu:16.04 and localhost:5000/my-ubuntu images, so t
 Pull the localhost:5000/my-ubuntu image from your local registry.
 
  docker pull localhost:5000/my-ubuntu
+ 
+ 
+ ## Docker engile/cli/daemon
+ Docker CLI can be installed on different machine and talk by REST with the machine where it installed:
+ - Use **-H=machine:port** to run commands. e.g., `docker -H=10.123.2.1:2375 run nginx`
+
+All docker run within namespace (for example in linux processID).
+- But docker itself also has process ids inside. BUT there is not real separation so processes inside the container are same as outside. So two processes cannot have PID of 1 (default). 
+- So we use namespaces. If we start a container the inside process gets the next available process on docker machine (for example 5 and 6) but in the container he gets 1 and 2/
+
+### Limit the resources for the docker
+- For example cpu by **--cpus** e.g., `docker run --cpus=.5 ubuntu`
+- For examole memory bt **--memory** e.g., `docker run --memory=100m ubuntu`
+- 
