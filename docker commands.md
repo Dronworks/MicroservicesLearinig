@@ -125,10 +125,13 @@ docker **run -e VARIABLE=value app-name**
 
 To find what environment variables are currently set to a container run `docker inspect name` and look under **Config -> Env**.
 
-## Docker with a name 
+### Docker with a name 
 docker **run --name=[name]**
 
 ### Build docker image
 - docker **build .** - this will build an image without name
 - docker **build . -t name** - this will build an image with tag (name)
 - docker **build . -f [docker file name] -t name** - will build using non default docker file name
+
+### Docker image actual size
+docker **system df** - this will show the actual size, because same layeres are reused and dont spend more size.
