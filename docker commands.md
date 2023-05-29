@@ -136,3 +136,6 @@ docker **run --name=[name]**
 ### Docker image actual size
 - docker **system df** - this will show the actual size, because same layeres are reused and dont spend more size.
 - docker **system df -v** - this will show the actual size per image.
+
+### Run linux with command line
+docker **run ubuntu bash**

@@ -104,3 +104,11 @@ Container layer is Read/Write (image layer is read only), BUT not persistant. If
 - Bind mount - binds to different "real location"
 - Inside /var/lib/docker/[file syste] you can see the builed layers of a docker. (ubunty for example is aufs). Files are in diff folder.
 - We can enter each subfolder there and see the files that are added in this layer.
+
+
+## Networking
+3 different network settings. Usage: `docker run --network name`
+1. Default(bridge) - all dockers containers connected by a single network.
+    1. create a custom network for containers: `docker create network --driver bridge --subnet 182.18.0.0/16 some-name`
+2. None - container is isolated from the host and from other containers.
+3. host - container is in the same network as a host
